@@ -1,24 +1,29 @@
-import logo from './logo.svg';
+import React,{useEffect, useState} from 'react';
 import './App.css';
+import Card from './Card';
+
 
 function App() {
+  const [data,setData]=useState([]);
+  
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        let response = await fetch("https://restcountries.com/v3.1/all");
+        let data = await response.json();
+        setData(data);
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    }
+    fetchData();
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  <div  className='container'>
+    {data.map((country)=>(
+      <Card key={country.cca3} imageUrl={country.flags.png} name={country.name.common} />
+    ))}
+  </div>
   );
 }
 
